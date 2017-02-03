@@ -119,7 +119,7 @@ app.post('/api/echo', function(req, res){
                 if (status.error) {
                     console.log(status)
                 } else {
-                    console.log("message Published w/ timetoken", response.timetoken)
+                    console.log("message Published with timetoken", response.timetoken)
                 }
             }
         );
