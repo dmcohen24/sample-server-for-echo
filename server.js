@@ -4,17 +4,9 @@ var express = require('express')
 , port = process.env.PORT || 3000
 , fs = require('fs')
 , util = require('util');
-//, PubNub = require('pubnub');
+, PubNub = require('pubnub');
 
-/*
 var pubnub = new PubNub({
-    subscribeKey: "sub-c-e3f96dde-ea58-11e6-a85c-0619f8945a4f",
-    publishKey: "pub-c-13607f01-85f1-4659-8f11-dbdc3edd10f8",
-    ssl: true
-});
-*/
-
-var pubnub = require("pubnub")({
     subscribeKey: "sub-c-e3f96dde-ea58-11e6-a85c-0619f8945a4f",
     publishKey: "pub-c-13607f01-85f1-4659-8f11-dbdc3edd10f8",
     ssl: true
