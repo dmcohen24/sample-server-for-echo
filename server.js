@@ -3,7 +3,36 @@ var express = require('express')
 , server = require('http').createServer(app)
 , port = process.env.PORT || 3000
 , fs = require('fs')
-, util = require('util');
+, util = require('util')
+, PubNub = require('pubnub');
+
+var pubnub = new PubNub({
+    subscribeKey: "sub-c-e3f96dde-ea58-11e6-a85c-0619f8945a4f",
+    publishKey: "pub-c-13607f01-85f1-4659-8f11-dbdc3edd10f8",
+    ssl: true
+});
+
+pubnub.addListener({
+    
+    message: function(m) {
+        // handle message
+        var channelName = m.channel; // The channel for which the message belongs
+        var channelGroup = m.subscription; // The channel group or wildcard subscription match (if exists)
+        var pubTT = m.timetoken; // Publish timetoken
+        var msg = m.message; // The Payload
+        
+        if(channelName === 'echo_channel'){
+            console.log('got message ' + msg + '!');
+        }
+    },
+    status: function(s) {
+        // handle status
+    }
+});
+ 
+pubnub.subscribe({
+    channels: ['echo_channel']
+});
 
 // Creates the website server on the port #
 server.listen(port, function () {
@@ -78,6 +107,22 @@ app.post('/api/echo', function(req, res){
         // The Intent "TurnOn" was successfully called
         outputSpeechText = "Congrats! You asked to turn on " + jsonData.request.intent.slots.Device.value + " but it was not implemented";
         cardContent = "Successfully called " + jsonData.request.intent.name + ", but it's not implemented!";
+          
+        // Publish turn on message
+        pubnub.publish(
+            {
+                message: { device: jsonData.request.intent.slots.Device.value },
+                channel: 'echo_channel',
+            },
+            function (status, response) {
+                // handle status, response
+                if (status.error) {
+                    console.log(status)
+                } else {
+                    console.log("message Published w/ timetoken", response.timetoken)
+                }
+            }
+        );
       }
       else if (jsonData.request.intent.name == "TurnOff")
       {
