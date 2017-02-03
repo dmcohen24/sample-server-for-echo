@@ -3,7 +3,7 @@ var express = require('express')
 , server = require('http').createServer(app)
 , port = process.env.PORT || 3000
 , fs = require('fs')
-, util = require('util');
+, util = require('util')
 , PubNub = require('pubnub');
 
 var pubnub = new PubNub({
